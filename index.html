@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Tao Long Movements</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  </head>
+  <body>
+    <section>
+      <div class="container">
+        <div class="jumbotron">
+          <h1 class="title">Tao Long Movements</h1>
+
+          <div class="row">
+            <div class="col-6">
+              <h3>Controls</h3>
+              <a id="start" onclick="displayChoices()"><i class="material-icons">play_circle_outline</i> START GAME</a><br>
+
+              <button class="normal front" onclick="moveButton('forward', 'whiteDragon')">FORWARD</button>
+              <button class="normal left" onclick="moveButton('left', 'whiteDragon')">LEFT</button>
+              <button class="normal right" onclick="moveButton('right', 'whiteDragon')">RIGHT</button>
+              <button class="normal standstill" onclick="standstill('whiteDragon')">STANDSTILL</button>
+
+              <button class="special" onclick="repeatableMovement('whiteDragon')">HEAVEN/EARTH</button>
+              <button class="special" onclick="doubleMovement()">THUNDER/WIND</button>
+              <button class="special" onclick="movement()">LAKE/MOUNTAIN</button>
+
+              <button class="special element" onclick="elementMovement('fire')">FIRE</button>
+              <button class="special element" onclick="elementMovement('water')">WATER</button>
+
+              <a class="repetition" onclick="repeat('whiteDragon')"><i class="material-icons">repeat</i> REPEAT</a>
+              <a class="repetition" onclick="pass()"><i class="material-icons">skip_next</i> PASS</a>
+
+              <a class="action" onclick="elementAction('absorbed', 'whiteDragon')"><i class="material-icons">add_circle</i> ABSORB</a>
+              <a class="action" onclick="elementAction('released', 'whiteDragon')"><i class="material-icons">brightness_high</i> RELEASE</a>
+            </div>
+            <div class="col-4">
+              <h3>Movements</h3>
+              <ul id="movementList">
+                <li>Birth</li>
+              </ul>
+            </div>
+            <div class="col-2">
+              <h3>Stats</h3>
+              <h5>Water: <span id="watercount">4</span></h5>
+              <h5>Fire: <span id="firecount">0</span></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section>
+      <div class="container">
+        <div class="jumbotron">
+          <canvas id="canvas" height="300px" width="300px"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="script.js" charset="utf-8"></script>
+  </body>
+</html>
