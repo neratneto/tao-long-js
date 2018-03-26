@@ -2,66 +2,84 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Tao Long Movements</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <style>
+      button {
+        border-radius: 5px;
+
+      }
+      body {
+        text-align: center;
+        background-color: beige;
+        background-image: url("img/background2.png");
+      }
+      .basic-distance {
+        height: 150px;
+        margin-bottom: 4px;
+      }
+      #movementList {
+        overflow: hidden;
+        overflow-y: scroll;
+        height: 100px;
+      }
+    </style>
   </head>
   <body>
     <section>
       <div class="container">
-        <div class="jumbotron">
-          <h1 class="title">Tao Long Movements</h1>
+          <img src="https://static.wixstatic.com/media/684577_13b247f76c6d4db0b51ce9a58aee4845~mv2.png/v1/fill/w_1364,h_350,al_c,usm_0.66_1.00_0.01/684577_13b247f76c6d4db0b51ce9a58aee4845~mv2.png" style="width:100%;height:100%">
 
-          <div class="row">
-            <div class="col-6">
-              <h3>Controls</h3>
-              <a id="start" onclick="displayChoices()"><i class="material-icons">play_circle_outline</i> START GAME</a><br>
+          <div class="basic-distance">
+            <br>
+            <a id="start" onclick="displayChoices()"><i class="material-icons">play_circle_outline</i> START GAME</a><br>
 
-              <button class="normal front" onclick="moveButton('forward', 'whiteDragon')">FORWARD</button>
-              <button class="normal left" onclick="moveButton('left', 'whiteDragon')">LEFT</button>
-              <button class="normal right" onclick="moveButton('right', 'whiteDragon')">RIGHT</button>
-              <button class="normal standstill" onclick="standstill('whiteDragon')">STANDSTILL</button>
+            <button class="normal front" onclick="moveButton('forward')">FORWARD</button>
+            <button class="normal left" onclick="moveButton('left')">LEFT</button>
+            <button class="normal right" onclick="moveButton('right')">RIGHT</button>
+            <button class="normal standstill" onclick="standstill()">STANDSTILL</button>
 
-              <button class="special" onclick="repeatableMovement('whiteDragon')">HEAVEN/EARTH</button>
-              <button class="special" onclick="doubleMovement()">THUNDER/WIND</button>
-              <button class="special" onclick="movement()">LAKE/MOUNTAIN</button>
+            <button class="vertical" onclick="movement()">LAKE</button>
+            <button class="vertical" onclick="repeatableMovement()">SKY</button>
+            <button class="vertical" onclick="doubleMovement()">WIND</button>
 
-              <button class="special element" onclick="elementMovement('fire')">FIRE</button>
-              <button class="special element" onclick="elementMovement('water')">WATER</button>
 
-              <a class="repetition" onclick="repeat('whiteDragon')"><i class="material-icons">repeat</i> REPEAT</a>
-              <a class="repetition" onclick="pass()"><i class="material-icons">skip_next</i> PASS</a>
+            <!--button class="element fire" onclick="elementMovement('fire')">FIRE</button>
+            <button class="element water" onclick="elementMovement('water')">WATER</button-->
 
-              <a class="action" onclick="elementAction('absorbed', 'whiteDragon')"><i class="material-icons">add_circle</i> ABSORB</a>
-              <a class="action" onclick="elementAction('released', 'whiteDragon')"><i class="material-icons">brightness_high</i> RELEASE</a>
-            </div>
-            <div class="col-4">
-              <h3>Movements</h3>
-              <ul id="movementList">
-                <li>Birth</li>
-              </ul>
-            </div>
-            <div class="col-2">
-              <h3>Stats</h3>
-              <h5>Water: <span id="watercount">4</span></h5>
-              <h5>Fire: <span id="firecount">0</span></h5>
-            </div>
+            <button class="horizontal" onclick="doubleMovement()">THUNDER</button>
+            <button class="horizontal" onclick="repeatableMovement()">EARTH</button>
+            <button class="horizontal" onclick="movement()">MOUNTAIN</button>
+
+            <a class="repetition" onclick="repeat()"><i class="material-icons">repeat</i> REPEAT</a>
+            <a class="repetition" onclick="pass()"><i class="material-icons">skip_next</i> PASS</a>
+
+            <a class="action absorb" onclick="elementAction('absorbed')"><i class="material-icons">add_circle</i> ABSORB</a>
+            <a class="action release" onclick="elementAction('released')"><i class="material-icons">brightness_high</i> RELEASE</a>
           </div>
-        </div>
-      </div>
-    </section>
-
-
-    <section>
-      <div class="container">
-        <div class="jumbotron">
+        <!--div class="row">
+          <div class="col-6" style="text-align:right">
+            <h5>Water: <span id="watercount">4</span></h5>
+            <h5>Fire: <span id="firecount">0</span></h5>
+          </div>
+          <div class="col-6">
+            <ul id="movementList">
+              <li>Birth</li>
+            </ul>
+          </div>
+        </div-->
           <canvas id="canvas" height="300px" width="300px"></canvas>
-        </div>
+
       </div>
     </section>
+
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

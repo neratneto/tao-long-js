@@ -1,168 +1,190 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var cellSize = 30;
-var bgcolors = ['lightgray', 'gray']
+var game = {
+  turn: '',
+  bgcolors: ['beige', 'gray'],
+};
 var whiteDragon = {
   color: 'white',
   water: 4,
   fire: 0,
   head: [],
   history: [8],
-  facing: 'south'
+  facing: '',
 };
 
 
 
-
 function displayChoices() {
-  $(".special").show();
-  $("#start").hide();
+  hideAll();
+  if (this[game.turn].facing == ("south" || "north")) {
+    $(".vertical").show();
+  } else if ("east" || "west") {
+    $(".horizontal").show();
+  }
+  $(".element").show();
 }
 
 
+function hideAll() {
+    $("#start").hide();
+    $(".normal").hide();
+    $(".vertical").hide();
+    $(".element").hide();
+    $(".horizontal").hide();
+    $(".repetition").hide();
+    $(".action").hide();
+}
 
-function move(direction, player) {
-  switch (this[player].facing) {
+
+function move(direction) {
+  switch (this[game.turn].facing) {
     case "north":
       switch (direction) {
           case "forward":
-            this[player].head[1] -= cellSize;
+            this[game.turn].head[1] -= cellSize;
             break;
           case "right":
-            this[player].facing = "east";
-            this[player].head[0] += cellSize;
+            this[game.turn].facing = "east";
+            this[game.turn].head[0] += cellSize;
             break;
           case "left":
-            this[player].facing = "west";
-            this[player].head[0] -= cellSize;
+            this[game.turn].facing = "west";
+            this[game.turn].head[0] -= cellSize;
             break;
         }
       break;
     case "south":
       switch (direction) {
           case "forward":
-            this[player].head[1] += cellSize;
+            this[game.turn].head[1] += cellSize;
             break;
           case "right":
-            this[player].facing = "west";
-            this[player].head[0] -= cellSize;
+            this[game.turn].facing = "west";
+            this[game.turn].head[0] -= cellSize;
             break;
           case "left":
-            this[player].facing = "east";
-            this[player].head[0] += cellSize;
+            this[game.turn].facing = "east";
+            this[game.turn].head[0] += cellSize;
             break;
         }
       break;
     case "east":
       switch (direction) {
           case "forward":
-            this[player].head[0] += cellSize;
+            this[game.turn].head[0] += cellSize;
             break;
           case "right":
-            this[player].facing = "south";
-            this[player].head[1] += cellSize;
+            this[game.turn].facing = "south";
+            this[game.turn].head[1] += cellSize;
             break;
           case "left":
-            this[player].facing = "north";
-            this[player].head[1] -= cellSize;
+            this[game.turn].facing = "north";
+            this[game.turn].head[1] -= cellSize;
             break;
         }
       break;
     case "west":
       switch (direction) {
           case "forward":
-            this[player].head[0] -= cellSize;
+            this[game.turn].head[0] -= cellSize;
             break;
           case "right":
-            this[player].facing = "north";
-            this[player].head[1] -= cellSize;
+            this[game.turn].facing = "north";
+            this[game.turn].head[1] -= cellSize;
             break;
           case "left":
-            this[player].facing = "south";
-            this[player].head[1] += cellSize;
+            this[game.turn].facing = "south";
+            this[game.turn].head[1] += cellSize;
             break;
         }
       break;
   }
-  moveDragon(player);
+  moveDragon();
 }
 
-function moveButton(direction, player) {
-  move(direction, player);
-  $("#movementList").append("<li>" + player + " moved " + direction + "</li>");
-  $("button").hide();
-  pass();
+function moveButton(direction) {
+  move(direction);
+  $("#movementList").append("<li>" + game.turn + " moved " + direction + "</li>");
+  displayChoices();
 }
 
-function standstill(player) {
-  $("#movementList").append("<li>" + player + " did not move" + "</li>");
-  $("button").hide();
-  pass();
+function standstill() {
+  $("#movementList").append("<li>" + game.turn + " did not move" + "</li>");
+  displayChoices();
 }
 
-function repeatableMovement(player) {
-  move('forward', player);
-  $("#movementList").append("<li>" + player + " moved forward </li>");
-  $(".special").hide();
+function repeatableMovement() {
+  hideAll();
+  move('forward');
+  $("#movementList").append("<li>" + game.turn + " moved forward </li>");
   $(".repetition").show();
 }
 
 function doubleMovement() {
-  $(".special").hide();
-  $(".right").show();
-  $(".left").show();
+  hideAll();
+  $(".normal").show();
+  $(".standstill").hide();
+  $(".front").hide();
 }
 
 function movement() {
-  $(".special").hide();
+  hideAll();
   $(".normal").show();
 }
 
 function elementMovement(newelement) {
   element = newelement;
-  $("button").hide();
+  hideAll();
   $(".action").show();
 }
 
 
-function elementAction(action, player) {
-  $("#movementList").append("<li>" + player + " " + action + " " + element + "</li>");
-  $(".normal").show();
-  $(".standstill").hide();
-  $(".action").hide();
-  switch (action + element) {
-    case "absorbedfire":
-      this[player].fire += 1;
+function elementAction(action) {
+  hideAll();
+  switch (action) {
+    case "absorbed":
+      if (this[game.turn][element] == 4) {
+        $("#movementList").append("Cannot absorb anymore, " + element + " is full.");
+        $(".release").show();
+      } else {
+        $("#movementList").append("<li>" + game.turn + " " + action + " " + element + "</li>");
+        $(".normal").show();
+        $(".standstill").hide();
+        this[game.turn][element] += 1;
+      }
       break;
-    case "releasedfire":
-      this[player].fire -= 1;
-      break;
-    case "absorbedwater":
-      this[player].water += 1;
-      break;
-    case "releasedwater":
-      this[player].water -= 1;
-      break;
+    case "released":
+      if (this[game.turn][element] == 0) {
+        $("#movementList").append("Cannot release, " + element + " is empty.");
+        $(".absorb").show();
+      } else {
+        $("#movementList").append("<li>" + game.turn + " " + action + " " + element + "</li>");
+        $(".normal").show();
+        $(".standstill").hide();
+        if (element == "fire") {
+          this[game.turn].fire -= 1;
+          drawAttack('fire');
+        } else {
+          drawAttack('water');
+        }
+      }
   }
-  refreshCounter(player);
+  refreshCounter();
 }
 
 
-function repeat(player) {
-  move('forward', player);
+function repeat() {
+  move('forward');
   $("li:last").append(" twice");
-  pass();
-}
-
-function pass() {
-  $(".repetition").hide();
-  $(".special").show();
+  displayChoices();
 }
 
 
-function refreshCounter(player) {
-  $("#watercount").text(this[player].water);
-  $("#firecount").text(this[player].fire);
+function refreshCounter() {
+  $("#watercount").text(this[game.turn].water);
+  $("#firecount").text(this[game.turn].fire);
 }
 
 
@@ -175,16 +197,16 @@ function drawSquare(x, y, color) {
 }
 
 function eraseSquare(x, y) {
-  ctx.fillStyle = bgcolors[0];
+  ctx.fillStyle = game.bgcolors[0];
 	ctx.fillRect(x, y, cellSize, cellSize);
-  ctx.fillStyle = bgcolors[1];
+  ctx.fillStyle = game.bgcolors[1];
 	ctx.fillRect(x, y, 1, cellSize);
 	ctx.fillRect(x, y, cellSize, 1);
 }
 
 function setBackground() {
-	ctx.fillStyle = bgcolors[0];
-	ctx.strokeStyle = bgcolors[1];
+	ctx.fillStyle = game.bgcolors[0];
+	ctx.strokeStyle = game.bgcolors[1];
 	ctx.fillRect(0, 0, canvas.height, canvas.width);
 	for(var x = 0.5; x < canvas.width; x += cellSize) {
 		ctx.moveTo(x, 0);
@@ -198,26 +220,104 @@ function setBackground() {
 }
 
 
-function moveDragon(player) {
-  drawSquare(this[player].head[0], this[player].head[1], this[player].color);
-  eraseSquare(this[player].history[6], this[player].history[7]);
-  this[player].history.unshift(this[player].head[0], this[player].head[1]);
-  this[player].history.pop();
-  this[player].history.pop();
+function moveDragon() {
+  drawSquare(this[game.turn].head[0], this[game.turn].head[1], this[game.turn].color);
+  eraseSquare(this[game.turn].history[6], this[game.turn].history[7]);
+  this[game.turn].history.unshift(this[game.turn].head[0], this[game.turn].head[1]);
+  this[game.turn].history.pop();
+  this[game.turn].history.pop();
 }
 
-function dragonInit(player, headX, headY, facing) {
-  this[player].facing = facing;
-  this[player].head[0] = headX;
-  this[player].head[1] = headY;
-  drawSquare(this[player].head[0], this[player].head[1], this[player].color);
-  drawSquare(this[player].head[0], (this[player].head[1] - cellSize), this[player].color);
-  drawSquare((this[player].head[0] + cellSize), (this[player].head[1] - cellSize), this[player].color);
-  drawSquare((this[player].head[0] + cellSize), this[player].head[1], this[player].color);
-  this[player].history = [this[player].head[0], this[player].head[1],
-                          this[player].head[0], (this[player].head[1] - cellSize),
-                          (this[player].head[0] + cellSize), (this[player].head[1] - cellSize),
-                          (this[player].head[0] + cellSize), this[player].head[1]];
+function drawAttack(type) {
+  /*switch (type) {
+    case "water":
+      switch (this[game.turn].facing) {
+        case "north":
+          drawSquare((this[game.turn].headX), (this[game.turn].headY - cellSize), "blue");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY - cellSize), "blue");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY - cellSize), "blue");
+          drawSquare((this[game.turn].headX), (this[game.turn].headY - 2*cellSize), "blue");
+          break;
+        case "south":
+          drawSquare((this[game.turn].headX), (this[game.turn].headY + cellSize), "blue");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY + cellSize), "blue");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY + cellSize), "blue");
+          drawSquare((this[game.turn].headX), (this[game.turn].headY + 2*cellSize), "blue");
+          break;
+        case "east":
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY), "blue");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY + cellSize), "blue");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY - cellSize), "blue");
+          drawSquare((this[game.turn].headX + 2*cellSize), (this[game.turn].headY), "blue");
+          break;
+        case "west":
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY), "blue");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY + cellSize), "blue");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY - cellSize), "blue");
+          drawSquare((this[game.turn].headX - 2*cellSize), (this[game.turn].headY), "blue");
+          break;
+      };
+      break;
+    case "fire":
+      switch (this[game.turn].facing) {
+        case "north":
+          drawSquare((this[game.turn].headX), (this[game.turn].headY - cellSize), "red");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY - cellSize), "red");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY - cellSize), "red");
+          drawSquare((this[game.turn].headX), (this[game.turn].headY - 2*cellSize), "red");
+          break;
+        case "south":
+          drawSquare((this[game.turn].headX), (this[game.turn].headY + cellSize), "red");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY + cellSize), "red");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY + cellSize), "red");
+          drawSquare((this[game.turn].headX), (this[game.turn].headY + 2*cellSize), "red");
+          break;
+        case "east":
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY), "red");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY + cellSize), "red");
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY - cellSize), "red");
+          drawSquare((this[game.turn].headX + 2*cellSize), (this[game.turn].headY), "red");
+          break;
+        case "west":
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY), "red");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY + cellSize), "red");
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY - cellSize), "red");
+          drawSquare((this[game.turn].headX - 2*cellSize), (this[game.turn].headY), "red");
+          break;
+      };
+      break;
+    case "bite":
+      switch (this[game.turn].facing) {
+        case "north":
+          drawSquare((this[game.turn].headX), (this[game.turn].headY - cellSize), "darkgray");
+          break;
+        case "south":
+          drawSquare((this[game.turn].headX), (this[game.turn].headY + cellSize), "darkgray");
+          break;
+        case "east":
+          drawSquare((this[game.turn].headX + cellSize), (this[game.turn].headY), "darkgray");
+          break;
+        case "west":
+          drawSquare((this[game.turn].headX - cellSize), (this[game.turn].headY), "darkgray");
+          break;
+      };
+      break;
+  }*/
+}
+
+function dragonInit(dragon, headX, headY, facing) {
+  game.turn = dragon;
+  this[game.turn].facing = facing;
+  this[game.turn].head[0] = headX;
+  this[game.turn].head[1] = headY;
+  drawSquare(this[game.turn].head[0], this[game.turn].head[1], this[game.turn].color);
+  drawSquare(this[game.turn].head[0], (this[game.turn].head[1] - cellSize), this[game.turn].color);
+  drawSquare((this[game.turn].head[0] + cellSize), (this[game.turn].head[1] - cellSize), this[game.turn].color);
+  drawSquare((this[game.turn].head[0] + cellSize), this[game.turn].head[1], this[game.turn].color);
+  this[game.turn].history = [this[game.turn].head[0], this[game.turn].head[1],
+                          this[game.turn].head[0], (this[game.turn].head[1] - cellSize),
+                          (this[game.turn].head[0] + cellSize), (this[game.turn].head[1] - cellSize),
+                          (this[game.turn].head[0] + cellSize), this[game.turn].head[1]];
 }
 
 
@@ -233,8 +333,12 @@ function changeDirection(keycode) {
 
 
 function init() {
-  $("button").hide();
-  $("a").hide();
+  $(".normal").hide();
+  $(".vertical").hide();
+  $(".element").hide();
+  $(".horizontal").hide();
+  $(".repetition").hide();
+  $(".action").hide();
   $("#start").show();
   setBackground();
   dragonInit('whiteDragon', 0, cellSize, 'south');
